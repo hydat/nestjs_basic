@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 type DatabaseType = 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mongodb';
 
@@ -30,6 +31,7 @@ console.log(process.env);
       migrationsTableName: 'migrations',
     }),
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     UserModule,
     PostModule,
     AuthModule,
