@@ -4,15 +4,12 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
-type DatabaseType = 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mongodb';
-
-console.log(process.env);
 @Module({
   imports: [
     ConfigModule.forRoot({
