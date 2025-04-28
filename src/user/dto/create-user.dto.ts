@@ -4,16 +4,21 @@ import {
   MinLength,
   IsOptional,
   IsNotEmpty,
-  Length,
+  IsEnum,
 } from 'class-validator';
 import { Match } from 'src/common/decorators/match.decorator';
+import { ERoles } from 'src/common/enum/role.enum';
 
 export class CreateUserDto {
-  @IsString({ message: 'string cho.' })
+  @IsString({ message: 'Username must be a string.' })
   username: string;
 
   @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsEnum(ERoles)
+  role: ERoles;
 
   @IsNotEmpty()
   @MinLength(6)
@@ -21,7 +26,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @Match('password', {
-    message: 'Mật khẩu không khớp',
+    message: 'Confirm password not match.',
   })
   confirmPassword: string;
 }

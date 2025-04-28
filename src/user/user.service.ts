@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { comparePassword, hashPassword } from 'src/common/helper/hash.helper';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ERoles } from 'src/common/enum/role.enum';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
   ) {}
 
   async getUsers(): Promise<User[]> {
-    this.eventEmitter.emitAsync('user.list', { username: 'aaaa' });
+    await this.eventEmitter.emitAsync('user.list', { username: 'aaaa' });
     return await this.userRepository.find();
   }
 
@@ -33,6 +34,7 @@ export class UserService {
     const user = this.userRepository.create({
       ...createUserDto,
       password: hashPassword(createUserDto.password),
+      role: ERoles.USER, // default role User
     });
 
     return await this.userRepository.save(user);
