@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { comparePassword, hashPassword } from 'src/common/helper/hash.helper';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import Redis from 'ioredis';
 import { ERoles } from 'src/common/enum/role.enum';
 
 @Injectable()
@@ -15,11 +16,18 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly eventEmitter: EventEmitter2,
+    @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
   ) {}
 
   async getUsers(): Promise<User[]> {
-    await this.eventEmitter.emitAsync('user.list', { username: 'aaaa' });
-    return await this.userRepository.find();
+    this.eventEmitter.emitAsync('user.list', { username: 'aaaa' });
+    const cachedData = await this.redisClient.get('list_user');
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+    const users = await this.userRepository.find();
+    await this.redisClient.set('list_user', JSON.stringify(users));
+    return users;
   }
 
   async getUserById(id: number): Promise<User> {
