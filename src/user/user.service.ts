@@ -8,6 +8,7 @@ import { comparePassword, hashPassword } from 'src/common/helper/hash.helper';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import Redis from 'ioredis';
+import { ERoles } from 'src/common/enum/role.enum';
 
 @Injectable()
 export class UserService {
@@ -41,6 +42,7 @@ export class UserService {
     const user = this.userRepository.create({
       ...createUserDto,
       password: hashPassword(createUserDto.password),
+      role: ERoles.USER, // default role User
     });
 
     return await this.userRepository.save(user);

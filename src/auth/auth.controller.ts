@@ -1,12 +1,7 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
   Post,
-  Put,
   Req,
   Request,
   UseGuards,
@@ -14,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, LoginResponse } from './dto/login.dto';
-import { AuthResponse } from './interface/auth.interface';
 import { AuthGuard } from './auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ERoles } from 'src/common/enum/role.enum';
