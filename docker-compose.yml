@@ -25,6 +25,11 @@ services:
       - .:/src
     depends_on:
       - mysql
+  redis:
+    image: redis
+    container_name: redis-container
+    ports:
+      - "6379:6379"
 
 volumes:
   mysql-data:
