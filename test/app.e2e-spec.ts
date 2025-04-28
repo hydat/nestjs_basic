@@ -16,6 +16,8 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  // ChauHH test permission
+
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
