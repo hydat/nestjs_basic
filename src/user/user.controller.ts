@@ -18,10 +18,10 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ERoles } from 'src/common/enum/role.enum';
-import { TransformInterceptor } from 'src/common/interceptors/response-format.interceptor';
+import { ResponseFormatInterceptor } from 'src/common/interceptors/response-format.interceptor';
 
 @Controller('users')
-@UseInterceptors(TransformInterceptor)
+@UseInterceptors(ResponseFormatInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post()
