@@ -9,6 +9,7 @@ import { LoginDto } from 'src/auth/dto/login.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import Redis from 'ioredis';
 import { ERoles } from 'src/common/enum/role.enum';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly emailService: EmailService,
     @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
   ) {}
 
@@ -45,7 +47,9 @@ export class UserService {
       role: ERoles.USER, // default role User
     });
 
-    return await this.userRepository.save(user);
+    const newUser = await this.userRepository.save(user);
+    await this.emailService.sendVerificationEmail(createUserDto.email);
+    return newUser;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {

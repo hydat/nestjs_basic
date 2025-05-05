@@ -6,9 +6,10 @@ import { User } from './entities/user.entity';
 import { SessionModule } from 'src/session/session.module';
 import { UserListener } from './user.listener';
 import Redis from 'ioredis';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), SessionModule],
+  imports: [TypeOrmModule.forFeature([User]), SessionModule, EmailModule],
   controllers: [UserController],
   providers: [
     UserService,
