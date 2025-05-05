@@ -10,6 +10,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './cron/cron.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import { BullModule } from '@nestjs/bullmq';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -37,10 +39,17 @@ import { RedisModule } from '@nestjs-modules/ioredis';
         port: parseInt(process.env.REDIS_PORT ?? '6379'),
       },
     }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST ?? 'localhost',
+        port: parseInt(process.env.REDIS_PORT ?? '6379'),
+      },
+    }),
     UserModule,
     PostModule,
     AuthModule,
     CronModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
