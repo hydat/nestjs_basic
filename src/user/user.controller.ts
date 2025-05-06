@@ -19,6 +19,7 @@ import { RolesGuard } from 'src/role/role.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ERoles } from 'src/common/enum/role.enum';
 import { ResponseFormatInterceptor } from 'src/common/interceptors/response-format.interceptor';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('users')
 @UseInterceptors(ResponseFormatInterceptor)
@@ -38,6 +39,7 @@ export class UserController {
 
   @Roles(ERoles.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 15, ttl: 30000 } })
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserById(id);

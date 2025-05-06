@@ -30,7 +30,9 @@ export class EmailProcessor extends WorkerHost {
     const maxAttempts = job.opts.attempts ?? 1;
 
     if (job.attemptsMade >= maxAttempts) {
-      console.log('Job failed sau tat ca cac lan retry');
+      console.log(`Job ${job.id} failed sau tat ca cac lan retry`);
+    } else {
+      console.log(`Job ${job.id} failed lan thu ${job.attemptsMade}`);
     }
   }
 }
