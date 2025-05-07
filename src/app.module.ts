@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +16,7 @@ import { EmailModule } from './email/email.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
+dotenv.config({ path: `.env.${process.env.NODE_ENV ?? 'development'}` });
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +33,8 @@ import { APP_GUARD } from '@nestjs/core';
       autoLoadEntities: true,
       migrations: [__dirname + '/migrations/*{.ts,.js}'],
       migrationsTableName: 'migrations',
+      synchronize: process.env.NODE_ENV === 'test',
+      dropSchema: process.env.NODE_ENV === 'test',
     }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
