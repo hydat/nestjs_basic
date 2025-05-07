@@ -13,7 +13,6 @@ export class PostService {
   ) {}
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
-    console.log('12312312', createPostDto);
     const post = this.postRepository.create(createPostDto);
     return await this.postRepository.save(post);
   }
@@ -24,19 +23,18 @@ export class PostService {
 
   async findOne(id: number): Promise<Post> {
     const post: Post | null = await this.postRepository.findOne({
-      where: { 
+      where: {
         id,
         user: {
-          username: Equal('test1')
-        }
-       },
+          username: Equal('test1'),
+        },
+      },
       relations: ['user'],
       select: {
-        
         user: {
-          username: true
+          username: true,
         },
-      }
+      },
     });
     if (!post) {
       throw new NotFoundException(`post with ID ${id} not found`);
