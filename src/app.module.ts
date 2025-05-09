@@ -15,6 +15,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { EmailModule } from './email/email.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { UploadModule } from './upload/upload.module';
+import minioConfig from './config/minio.config';
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV ?? 'development'}` });
 @Module({
@@ -22,6 +24,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV ?? 'development'}` });
     ConfigModule.forRoot({
       isGlobal: true, // 👉 để dùng ở bất kỳ đâu
       envFilePath: '.env', // 👉 nếu dùng file tên khác, chỉnh ở đây
+      load: [minioConfig],
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -64,6 +67,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV ?? 'development'}` });
     AuthModule,
     CronModule,
     EmailModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [
