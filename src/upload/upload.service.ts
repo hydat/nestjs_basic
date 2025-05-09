@@ -8,9 +8,11 @@ import {
   S3Client,
   UploadPartCommand,
 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { createReadStream } from 'fs';
 
 @Injectable()
 export class UploadService {
@@ -160,5 +162,30 @@ export class UploadService {
       console.error('Error generating presigned URL', error);
       throw error;
     }
+  }
+
+  async parallelUpload(
+    filename: string,
+    filePath: string,
+    mimetype: string,
+  ): Promise<void> {
+    const upload = new Upload({
+      client: this.s3,
+      params: {
+        Bucket: this.configService.get<string>('minio.bucket') ?? '',
+        Key: filename,
+        Body: createReadStream(filePath),
+        ContentType: mimetype,
+      },
+      queueSize: 12,
+      partSize: 5 * 1024 * 1024,
+      leavePartsOnError: false,
+    });
+
+    upload.on('httpUploadProgress', (progress) => {
+      console.log('Upload progress:', progress);
+    });
+
+    await upload.done();
   }
 }
