@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('upload')
 export class UploadController {
@@ -39,6 +41,29 @@ export class UploadController {
         originalname,
         mimetype,
       );
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  @Post('/parallel')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Thư mục lưu file tạm
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, uniqueSuffix + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  async parallelUpload(@UploadedFile() file: Express.Multer.File) {
+    try {
+      const { originalname, path, mimetype } = file;
+      console.log(file);
+      await this.uploadService.parallelUpload(originalname, path, mimetype);
     } catch (error) {
       throw new Error(error);
     }
